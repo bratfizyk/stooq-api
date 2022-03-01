@@ -6,6 +6,9 @@ author:             Alojzy Leszcz
 maintainer:         alojzy.leszcz@gmail.com
 build-type:         Simple
 extra-source-files: CHANGELOG.md
+Source-repository head
+  type:     git
+  location: https://github.com/bratfizyk/stooq-api
 
 library stooq-api-utils
   exposed-modules:    Web.Data.Stooq.Internals
