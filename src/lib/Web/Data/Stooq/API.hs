@@ -1,5 +1,23 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | Here's a simple wrapper around API offered by Stooq.pl.
+-- It's capable of returning the latest price for the given instrument.
+-- For more information about tickers available, visit the service.
+-- Keep in mind that in some situations their ticker convention is different to what's known e.g. from Yahoo Finance
+-- e.g.
+--
+-- xxxx.UK: London Stock Exchange (LSE)
+--
+-- xxxx.US: NYSE (OTC market not available, so a lot of ADRs like `OGZPY` or `SBRCY` can't be fetched)
+--
+-- xxxx.DE: Deutsche Börse
+--
+-- xxxx: (no exchange code after full stop) Warsaw Stock Exchange (GPW)
+--
+-- Use:
+--
+-- >>> fetch "SPY.US"
+-- Just [StooqPrice {symbol = "SPY.US", time = ..., ...}]
 module Web.Data.Stooq.API where
 
 import Control.Lens ((^.))
@@ -11,9 +29,11 @@ import Network.Wreq (get, responseBody)
 
 import qualified Web.Data.Stooq.Internals as Impl
 
+-- | A single-case DU that represents a ticker.
 newtype StooqSymbol = StooqSymbol String
     deriving (Show, Read, Eq, Ord)
 
+-- | A type representing market price data returned by Stooq.
 data StooqPrice =
     StooqPrice {
         symbol  :: String,
@@ -26,6 +46,8 @@ data StooqPrice =
         openint :: Int
     } deriving Show
 
+-- | Sends a request for the specified ticker and returns its latest price.
+-- Returns "Nothing" if the response is invalid (this is most likely due to using a non-existent ticker).
 fetchPrice :: StooqSymbol -> IO (Maybe [StooqPrice])
 fetchPrice ticker = do
     r <- get (queryUrl ticker)
@@ -60,9 +82,15 @@ fetchPrice ticker = do
         stooqTimeZone :: TimeZone
         stooqTimeZone = hoursToTimeZone 1
 
+-- | Sends a request for multiple tickers at once.
+-- The function makes only a single HTTP call.
 fetchPrices :: [StooqSymbol] -> IO (Maybe [StooqPrice])
 fetchPrices tickers = fetchPrice (concatTickers tickers)
     where
         concatTickers :: [StooqSymbol] -> StooqSymbol
         concatTickers = foldl1 (\(StooqSymbol t1) (StooqSymbol t2) -> StooqSymbol (t1 ++ " " ++ t2))
+
+-- | A shorthand around "fetchPrice" that allows to call the function using a plain String, without converting it to a `StooqSymbol` first.
+fetch :: String -> IO (Maybe [StooqPrice])
+fetch = fetchPrice . StooqSymbol
     
