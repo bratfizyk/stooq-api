@@ -11,6 +11,8 @@ Keep in mind that in some situations their ticker convention is different to wha
 Example:
 
 ```haskell
+import Web.Data.Stooq.API
+
 symbol :: String
 symbol = "SPY.US"
 
