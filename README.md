@@ -6,7 +6,10 @@ Keep in mind that in some situations their ticker convention is different to wha
 * `xxxx.UK`: London Stock Exchange (LSE)
 * `xxxx.US`: NYSE (OTC market not available, so a lot of ADRs like "OGZPY" or "SBRCY" can't be fetched)
 * `xxxx.DE`: Deutsche Börse
+* `xxxx.JP`: Tokyo Stock Exchange
 * `xxxx`: (no exchange code after full stop) Warsaw Stock Exchange (GPW)
+
+For a complete list of conventions and available instruments visit `stooq.pl`.
 
 Example:
 
