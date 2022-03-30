@@ -11,7 +11,7 @@ Keep in mind that in some situations their ticker convention is different to wha
 Example:
 
 ```haskell
-import Web.Data.Stooq.API
+import Web.Data.Stooq.API (fetch)
 
 symbol :: String
 symbol = "SPY.US"
@@ -21,5 +21,25 @@ main = do
     resp <- fetch symbol 
     case resp of
         Nothing -> error $ "Could not fetch data for " ++ symbol
-        Just price -> putStrLn $ show price
+        Just price -> print price
 ```
+
+Response:
+
+If a query succeeds, it returns an array of the following record:
+
+```haskell
+data StooqPrice =
+    StooqPrice {
+        symbol  :: String,
+        time    :: UTCTime,
+        open    :: Double,
+        high    :: Double,
+        low     :: Double,
+        close   :: Double,
+        volume  :: Int,
+        openint :: Int
+    } deriving Show
+```
+
+The field `close` might be a bit misleading, as it contains the last price known to stooq. So if you want to get the latest price for an instrument that's currently being traded, `close` is what you want.
