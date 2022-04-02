@@ -12,6 +12,8 @@
 --
 -- xxxx.DE: Deutsche Börse
 --
+-- xxxx.JP: Tokyo Stock Exchange
+--
 -- xxxx: (no exchange code after full stop) Warsaw Stock Exchange (GPW)
 --
 -- Use:
