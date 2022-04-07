@@ -34,7 +34,7 @@ If a query succeeds, it returns an array of the following record:
 ```haskell
 data StooqPrice =
     StooqPrice {
-        symbol  :: String,
+        symbol  :: StooqSymbol,
         time    :: UTCTime,
         open    :: Double,
         high    :: Double,

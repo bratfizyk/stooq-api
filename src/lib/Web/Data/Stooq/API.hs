@@ -19,7 +19,7 @@
 -- Use:
 --
 -- >>> fetch "SPY.US"
--- Just [StooqPrice {symbol = "SPY.US", time = ..., ...}]
+-- Just [StooqPrice {symbol = StooqSymbol "SPY.US", time = ..., ...}]
 module Web.Data.Stooq.API where
 
 import Control.Lens ((^.))
@@ -38,7 +38,7 @@ newtype StooqSymbol = StooqSymbol String
 -- | A type representing market price data returned by Stooq.
 data StooqPrice =
     StooqPrice {
-        symbol  :: String,
+        symbol  :: StooqSymbol,
         time    :: UTCTime,
         open    :: Double,
         high    :: Double,
@@ -64,7 +64,7 @@ fetchPrice ticker = do
 
         toApiType :: Impl.StooqRow -> StooqPrice
         toApiType row = StooqPrice {
-            symbol  = (unpack . Impl.symbol) row,
+            symbol  = (StooqSymbol . unpack . Impl.symbol) row,
             time    = localTimeToUTC stooqTimeZone $ LocalTime ((stooqIntToDay . Impl.date) row) ((stooqStringToTime . unpack . Impl.time) row),
             open    = Impl.open row,
             high    = Impl.high row,
@@ -95,4 +95,3 @@ fetchPrices tickers = fetchPrice (concatTickers tickers)
 -- | A shorthand around "fetchPrice" that allows to call the function using a plain String, without converting it to a `StooqSymbol` first.
 fetch :: String -> IO (Maybe [StooqPrice])
 fetch = fetchPrice . StooqSymbol
-    
