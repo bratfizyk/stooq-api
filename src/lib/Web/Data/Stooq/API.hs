@@ -44,8 +44,7 @@ data StooqPrice =
         high    :: Double,
         low     :: Double,
         close   :: Double,
-        volume  :: Int,
-        openint :: Int
+        volume  :: Int
     } deriving Show
 
 -- | Sends a request for the specified ticker and returns its latest price.
@@ -70,8 +69,7 @@ fetchPrice ticker = do
             high    = Impl.high row,
             low     = Impl.low row,
             close   = Impl.close row,
-            volume  = Impl.volume row,
-            openint = Impl.openint row
+            volume  = Impl.volume row
         }
 
         stooqIntToDay :: Int -> Day

@@ -3,7 +3,9 @@
 module Web.Data.Stooq.Internals where
 
 import Data.Aeson (FromJSON, decode)
-import Data.ByteString.Lazy.Internal (ByteString)
+import Data.ByteString.Lazy (ByteString, empty)
+import Data.ByteString.Char8 (pack)
+import Data.ByteString.Lazy.Search (replace)
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
@@ -16,8 +18,7 @@ data StooqRow =
         high    :: Double,
         low     :: Double,
         close   :: Double,
-        volume  :: Int,
-        openint :: Int
+        volume  :: Int
     } deriving (Show, Generic)
 
 data StooqResponse =
@@ -29,4 +30,7 @@ instance FromJSON StooqRow
 instance FromJSON StooqResponse
 
 parseResponse :: ByteString -> Maybe StooqResponse
-parseResponse = decode
+parseResponse = decode . replace searchedSubstring replacement
+    where
+        searchedSubstring = pack ",\"openint\":}"
+        replacement = pack "}"
