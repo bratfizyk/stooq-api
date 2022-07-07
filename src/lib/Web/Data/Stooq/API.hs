@@ -8,7 +8,7 @@
 --
 -- xxxx.UK: London Stock Exchange (LSE)
 --
--- xxxx.US: NYSE (OTC market not available, so a lot of ADRs like `OGZPY` or `SBRCY` can't be fetched)
+-- xxxx.US: NYSE (OTC market not available, so a lot of ADRs like "OGZPY" or "SBRCY" can't be fetched)
 --
 -- xxxx.DE: Deutsche Börse
 --

@@ -1,5 +1,9 @@
 # Revision history for stooq
 
+## 0.3.1.0 -- 2022-07-07
+
+* Migrating to nixpkgs 22.05.
+
 ## 0.3.0.0 -- 2022-07-06
 
 * Removing the field `openint` from the response, as sometimes it's missing in server's response, causing the entire call to fail.

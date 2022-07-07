@@ -46,4 +46,4 @@ data StooqPrice =
 
 The field `close` might be a bit misleading, as it contains the last price known to stooq. So if you want to get the latest price for an instrument that's currently being traded, `close` is what you want.
 
-Until the version 0.3 there used to be a field `openint`, but it was removed due to problems it caused compared to the value.
+Until the version 0.3.0 there used to be a field `openint`, but it was removed due to problems it caused compared to the value.
