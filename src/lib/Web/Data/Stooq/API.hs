@@ -49,9 +49,10 @@ data StooqPrice =
 
 -- | Sends a request for the specified ticker and returns its latest price.
 -- Returns "Nothing" if the response is invalid (this is most likely due to using a non-existent ticker).
-fetchPrice :: StooqSymbol -> IO (Maybe [StooqPrice])
+fetchPrice :: StooqSymbol -> IO (Either String [StooqPrice])
 fetchPrice ticker = do
-    r <- get (queryUrl ticker)
+    let url = queryUrl ticker
+    r <- get url
     return $ fmap (map toApiType . Impl.symbols) (Impl.parseResponse (r ^. responseBody))
 
     where
@@ -84,12 +85,12 @@ fetchPrice ticker = do
 
 -- | Sends a request for multiple tickers at once.
 -- The function makes only a single HTTP call.
-fetchPrices :: [StooqSymbol] -> IO (Maybe [StooqPrice])
+fetchPrices :: [StooqSymbol] -> IO (Either String [StooqPrice])
 fetchPrices tickers = fetchPrice (concatTickers tickers)
     where
         concatTickers :: [StooqSymbol] -> StooqSymbol
         concatTickers = foldl1 (\(StooqSymbol t1) (StooqSymbol t2) -> StooqSymbol (t1 ++ " " ++ t2))
 
 -- | A shorthand around "fetchPrice" that allows to call the function using a plain String, without converting it to a `StooqSymbol` first.
-fetch :: String -> IO (Maybe [StooqPrice])
+fetch :: String -> IO (Either String [StooqPrice])
 fetch = fetchPrice . StooqSymbol

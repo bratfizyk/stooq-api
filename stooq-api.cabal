@@ -1,7 +1,7 @@
 cabal-version:      2.0
 
 name:               stooq-api
-version:            0.4.0.0
+version:            0.4.1.0
 synopsis:           A simple wrapper around stooq.pl API for downloading market data.
 description:
   Here's a simple wrapper around API offered by Stooq.pl.
