@@ -2,12 +2,13 @@
 
 module Web.Data.Stooq.Internals where
 
-import Data.Aeson (FromJSON, decode)
-import Data.ByteString.Lazy (ByteString, empty)
-import Data.ByteString.Char8 (pack)
-import Data.ByteString.Lazy.Search (replace)
+import Data.ByteString.Lazy (ByteString)
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import GHC.Generics (Generic)
+
+import Data.Csv (decode, HasHeader(NoHeader))
+import qualified Data.Vector as V
 
 data StooqRow =
     StooqRow {
@@ -26,11 +27,12 @@ data StooqResponse =
         symbols :: [StooqRow]
     } deriving (Show, Generic)
 
-instance FromJSON StooqRow
-instance FromJSON StooqResponse
-
 parseResponse :: ByteString -> Maybe StooqResponse
-parseResponse = decode . replace searchedSubstring replacement
+parseResponse input = 
+    case decode NoHeader input of
+        Left err -> Nothing
+        Right v -> Just . StooqResponse . V.toList $ V.map tupleToStooqRow v
+
     where
-        searchedSubstring = pack ",\"openint\":}"
-        replacement = pack "}"
+        tupleToStooqRow :: (Text, Int, Text, Double, Double, Double, Double, Maybe Int, Text) -> StooqRow
+        tupleToStooqRow (name, date, time, open, high, low, close, volume, _) = StooqRow name date time open high low close (fromMaybe 0 volume)

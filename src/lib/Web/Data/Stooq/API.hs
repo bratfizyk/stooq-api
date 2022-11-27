@@ -59,7 +59,7 @@ fetchPrice ticker = do
         baseUrl = "https://stooq.pl/q/l/?s="
 
         queryUrl :: StooqSymbol -> String
-        queryUrl (StooqSymbol ticker) = baseUrl ++ ticker ++ "&e=json"
+        queryUrl (StooqSymbol ticker) = baseUrl ++ ticker ++ "&e=xml"
 
         toApiType :: Impl.StooqRow -> StooqPrice
         toApiType row = StooqPrice {
