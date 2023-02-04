@@ -1,5 +1,9 @@
 # Revision history for stooq
 
+## 0.4.2.0 -- 2023-02-04
+
+* Updating nixos channel to 22.11.
+
 ## 0.4.0.0 -- 2022-11-27
 
 * Switching to XML format, which seems more reliable than JSON.

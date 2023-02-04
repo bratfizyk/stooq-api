@@ -2,7 +2,7 @@
   text, time, time-compat, utf8-string, vector, wreq }:
 mkDerivation {
   pname = "stooq-api";
-  version = "0.4.1.0";
+  version = "0.4.2.0";
   src = ./.;
   isLibrary = true;
   isExecutable = false;
