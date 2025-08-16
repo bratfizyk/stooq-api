@@ -22,12 +22,15 @@
 -- Just [StooqPrice {symbol = StooqSymbol "SPY.US", time = ..., ...}]
 module Web.Data.Stooq.API where
 
-import Control.Lens ((^.))
+import Data.ByteString.Lazy.Internal (ByteString)
 import Data.Text (Text, unpack)
 import Data.Time.Calendar (fromGregorian, Day)
 import Data.Time.Clock (UTCTime(..))
 import Data.Time.LocalTime (LocalTime(LocalTime), TimeOfDay(TimeOfDay), TimeZone, localTimeToUTC, hoursToTimeZone)
-import Network.Wreq (get, responseBody)
+
+import Network.HTTP.Client (Response(responseBody), Manager, httpLbs,newManager, parseRequest)
+import Network.HTTP.Client.OpenSSL (opensslManagerSettings)
+import OpenSSL.Session (context)
 
 import qualified Web.Data.Stooq.Internals as Impl
 
@@ -51,9 +54,8 @@ data StooqPrice =
 -- Returns "Nothing" if the response is invalid (this is most likely due to using a non-existent ticker).
 fetchPrice :: StooqSymbol -> IO (Either String [StooqPrice])
 fetchPrice ticker = do
-    let url = queryUrl ticker
-    r <- get url
-    return $ fmap (map toApiType . Impl.symbols) (Impl.parseResponse (r ^. responseBody))
+    r <- get $ queryUrl ticker
+    return $ fmap (map toApiType . Impl.symbols) (Impl.parseResponse r)
 
     where
         baseUrl :: String
@@ -61,6 +63,14 @@ fetchPrice ticker = do
 
         queryUrl :: StooqSymbol -> String
         queryUrl (StooqSymbol ticker) = baseUrl ++ ticker ++ "&e=xml"
+
+        get :: String -> IO ByteString
+        get url = do
+            manager <- newManager $ opensslManagerSettings context
+            request <- parseRequest url
+            r <- httpLbs request manager
+            return $ responseBody r
+
 
         toApiType :: Impl.StooqRow -> StooqPrice
         toApiType row = StooqPrice {
